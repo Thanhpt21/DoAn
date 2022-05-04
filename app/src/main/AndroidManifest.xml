@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DoAn">
+
         <activity
             android:name=".EditProfileActivity"
             android:exported="false" />
@@ -34,9 +35,9 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="false" >
-
-        </activity>
+            android:exported="false"></activity>
+        <receiver android:name=".AlarmReceiver" />
+        <service android:name=".Music" android:enabled="true"/>
     </application>
 
 </manifest>
