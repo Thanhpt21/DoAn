@@ -99,7 +99,17 @@ public class MainActivity extends AppCompatActivity implements ExampleDialog.Exa
                         String temp = snapshot.child("temp").getValue().toString();
                         String tempAuto = tv_temp.getText().toString();
                         String humiAuto = tv_humi.getText().toString();
+                        if(Integer.parseInt(humi) >= Integer.parseInt(humiAuto)){
+                            String message = "Pump is on";
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "My notification");
+                            builder.setSmallIcon(R.drawable.ic_message);
+                            builder.setContentTitle("New Notification");
+                            builder.setContentText(message);
+                            builder.setAutoCancel(true);
 
+                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(MainActivity.this);
+                            notificationManagerCompat.notify(1, builder.build());
+                        }
 
                         d.setText(auto.toString());
                         if(auto == true){
@@ -127,11 +137,16 @@ public class MainActivity extends AppCompatActivity implements ExampleDialog.Exa
         tb_auto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
-                    databaseReference.child("auto").setValue(b);
-
+                if(tb_time.isChecked()){
+                    Toast.makeText(MainActivity.this, "Schedule time is on", Toast.LENGTH_SHORT).show();
+                    databaseReference.child("time").setValue(false);
                 }else {
-                    databaseReference.child("auto").setValue(b);
+                    if(b){
+                        databaseReference.child("auto").setValue(b);
+
+                    }else {
+                        databaseReference.child("auto").setValue(b);
+                    }
                 }
             }
         });
@@ -141,170 +156,173 @@ public class MainActivity extends AppCompatActivity implements ExampleDialog.Exa
                 openDialog();
             }
         });
-
         tb_time.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
-                    databaseReference.child("time").setValue(b);
-                    tv_timer1.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            TimePickerDialog timePickerDialog = new TimePickerDialog(
-                                    MainActivity.this,
-                                    new TimePickerDialog.OnTimeSetListener() {
-                                        @Override
-                                        public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                                            switchCompat.setChecked(false);
-                                            t1Hour = i;
-                                            t1Minute = i1;
-                                            calendar.set(Calendar.HOUR_OF_DAY,t1Hour);
-                                            calendar.set(Calendar.MINUTE,t1Minute);
-                                            calendar.set(Calendar.SECOND,0);
-                                            calendar.set(Calendar.MILLISECOND,0);
-                                            Date dateSchedule = calendar.getTime();
-                                            int hours = t1Hour;
-                                            int minutes = t1Minute;
-                                            String str_hours = String.valueOf(hours);
-                                            String str_minutes = String.valueOf(minutes);
-                                            if(minutes<10){
-                                                str_minutes ="0";
-                                                str_minutes = str_minutes.concat(String.valueOf(minutes));
-                                            }else {
-                                                str_minutes = String.valueOf(minutes);
-                                            }
-
-                                            String stringAlarmTime;
-                                            if(hours >= 12){
-                                                stringAlarmTime = String.valueOf(hours).concat(":").concat(str_minutes).concat(" PM");
-                                            }else {
-                                                stringAlarmTime = String.valueOf(hours).concat(":").concat(str_minutes).concat(" AM");
-                                            }
-
-                                            tv_timer1.setText(stringAlarmTime);
-
-                                            long period = 24 * 60 * 60 * 1000;
-                                            TimerTask task = new TimerTask() {
-                                                @Override
-                                                public void run() {
-                                                    databaseReference.child("pump").setValue(true);
-                                                    String message = "Pump is on";
-                                                    NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "My notification");
-                                                    builder.setSmallIcon(R.drawable.ic_message);
-                                                    builder.setContentTitle("New Notification");
-                                                    builder.setContentText(message);
-                                                    builder.setAutoCancel(true);
-
-                                                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(MainActivity.this);
-                                                    notificationManagerCompat.notify(1, builder.build());
-                                                }
-                                            };
-                                            Timer timer = new Timer();
-                                            timer.schedule(task, dateSchedule, period);
-
-
-                                        }
-                                    }, 24, 0 , true
-                            );
-
-                            timePickerDialog.updateTime(t1Hour, t1Minute);
-                            timePickerDialog.show();
-                        }
-                    });
-
-                    final Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
-                    calendar = Calendar.getInstance();
-                    Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
-                    alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-                    tv_timer2.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            TimePickerDialog timePickerDialog = new TimePickerDialog(
-                                    MainActivity.this,
-                                    new TimePickerDialog.OnTimeSetListener() {
-                                        @Override
-                                        public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                                            t2Hour = i;
-                                            t2Minute = i1;
-                                            calendar.set(Calendar.HOUR_OF_DAY,t2Hour);
-                                            calendar.set(Calendar.MINUTE,t2Minute);
-                                            calendar.set(Calendar.SECOND,0);
-                                            calendar.set(Calendar.MILLISECOND,0);
-                                            Date dateSchedule = calendar.getTime();
-                                            int hours = t2Hour;
-                                            int minutes = t2Minute;
-                                            String str_hours = String.valueOf(hours);
-                                            String str_minutes = String.valueOf(minutes);
-                                            if(minutes<10){
-                                                str_minutes ="0";
-                                                str_minutes = str_minutes.concat(String.valueOf(minutes));
-                                            }else {
-                                                str_minutes = String.valueOf(minutes);
-                                            }
-
-                                            String stringAlarmTime;
-                                            if(hours >= 12){
-                                                stringAlarmTime = String.valueOf(hours).concat(":").concat(str_minutes).concat(" PM");
-                                            }else {
-                                                stringAlarmTime = String.valueOf(hours).concat(":").concat(str_minutes).concat(" AM");
-                                            }
-                                            tv_timer2.setText(stringAlarmTime);
-                                            pendingIntent = PendingIntent.getBroadcast(
-                                                    MainActivity.this,
-                                                    0,
-                                                    intent,
-                                                    PendingIntent.FLAG_UPDATE_CURRENT
-                                            );
-                                            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                                            long period = 24 * 60 * 60 * 1000;
-                                            TimerTask task = new TimerTask() {
-                                                @Override
-                                                public void run() {
-                                                    databaseReference.child("pump").setValue(false);
-                                                    String message = "Pump is off";
-                                                    NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "My notification");
-                                                    builder.setSmallIcon(R.drawable.ic_message);
-                                                    builder.setContentTitle("New Notification");
-                                                    builder.setContentText(message);
-                                                    builder.setAutoCancel(true);
-
-                                                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(MainActivity.this);
-                                                    notificationManagerCompat.notify(1, builder.build());
-                                                }
-                                            };
-                                            Timer timer = new Timer();
-                                            timer.schedule(task, dateSchedule, period);
-                                        }
-                                    },24,0, true
-                            );
-                            timePickerDialog.updateTime(t2Hour, t2Minute);
-                            timePickerDialog.show();
-                        }
-                    });
-                    tv_time.setText("Auto time is on");
+                if(tb_auto.isChecked()){
+                    Toast.makeText(MainActivity.this, "Auto is on", Toast.LENGTH_SHORT).show();
+                    databaseReference.child("auto").setValue(false);
                 }else {
-                    databaseReference.child("time").setValue(b);
-                    tv_time.setText("Auto time is off");
-                    tv_timer1.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            tv_time.setText("No handle when off");
-                            tv_timer1.setText("StartTime");
-                        }
-                    });
-                    tv_timer2.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            tv_time.setText("No handle when off");
-                            tv_timer2.setText("EndTime");
-                        }
-                    });
+                    if(b){
+                        databaseReference.child("time").setValue(b);
+                        tv_timer1.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                TimePickerDialog timePickerDialog = new TimePickerDialog(
+                                        MainActivity.this,
+                                        new TimePickerDialog.OnTimeSetListener() {
+                                            @Override
+                                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                                                switchCompat.setChecked(false);
+                                                t1Hour = i;
+                                                t1Minute = i1;
+                                                calendar.set(Calendar.HOUR_OF_DAY,t1Hour);
+                                                calendar.set(Calendar.MINUTE,t1Minute);
+                                                calendar.set(Calendar.SECOND,0);
+                                                calendar.set(Calendar.MILLISECOND,0);
+                                                Date dateSchedule = calendar.getTime();
+                                                int hours = t1Hour;
+                                                int minutes = t1Minute;
+                                                String str_hours = String.valueOf(hours);
+                                                String str_minutes = String.valueOf(minutes);
+                                                if(minutes<10){
+                                                    str_minutes ="0";
+                                                    str_minutes = str_minutes.concat(String.valueOf(minutes));
+                                                }else {
+                                                    str_minutes = String.valueOf(minutes);
+                                                }
+
+                                                String stringAlarmTime;
+                                                if(hours >= 12){
+                                                    stringAlarmTime = String.valueOf(hours).concat(":").concat(str_minutes).concat(" PM");
+                                                }else {
+                                                    stringAlarmTime = String.valueOf(hours).concat(":").concat(str_minutes).concat(" AM");
+                                                }
+
+                                                tv_timer1.setText(stringAlarmTime);
+
+                                                long period = 24 * 60 * 60 * 1000;
+                                                TimerTask task = new TimerTask() {
+                                                    @Override
+                                                    public void run() {
+                                                        databaseReference.child("pump").setValue(true);
+                                                        String message = "Pump is on";
+                                                        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "My notification");
+                                                        builder.setSmallIcon(R.drawable.ic_message);
+                                                        builder.setContentTitle("New Notification");
+                                                        builder.setContentText(message);
+                                                        builder.setAutoCancel(true);
+
+                                                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(MainActivity.this);
+                                                        notificationManagerCompat.notify(1, builder.build());
+                                                    }
+                                                };
+                                                Timer timer = new Timer();
+                                                timer.schedule(task, dateSchedule, period);
+
+
+                                            }
+                                        }, 24, 0 , true
+                                );
+
+                                timePickerDialog.updateTime(t1Hour, t1Minute);
+                                timePickerDialog.show();
+                            }
+                        });
+
+                        final Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
+                        calendar = Calendar.getInstance();
+                        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+                        alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+                        tv_timer2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                TimePickerDialog timePickerDialog = new TimePickerDialog(
+                                        MainActivity.this,
+                                        new TimePickerDialog.OnTimeSetListener() {
+                                            @Override
+                                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                                                t2Hour = i;
+                                                t2Minute = i1;
+                                                calendar.set(Calendar.HOUR_OF_DAY,t2Hour);
+                                                calendar.set(Calendar.MINUTE,t2Minute);
+                                                calendar.set(Calendar.SECOND,0);
+                                                calendar.set(Calendar.MILLISECOND,0);
+                                                Date dateSchedule = calendar.getTime();
+                                                int hours = t2Hour;
+                                                int minutes = t2Minute;
+                                                String str_hours = String.valueOf(hours);
+                                                String str_minutes = String.valueOf(minutes);
+                                                if(minutes<10){
+                                                    str_minutes ="0";
+                                                    str_minutes = str_minutes.concat(String.valueOf(minutes));
+                                                }else {
+                                                    str_minutes = String.valueOf(minutes);
+                                                }
+
+                                                String stringAlarmTime;
+                                                if(hours >= 12){
+                                                    stringAlarmTime = String.valueOf(hours).concat(":").concat(str_minutes).concat(" PM");
+                                                }else {
+                                                    stringAlarmTime = String.valueOf(hours).concat(":").concat(str_minutes).concat(" AM");
+                                                }
+                                                tv_timer2.setText(stringAlarmTime);
+                                                pendingIntent = PendingIntent.getBroadcast(
+                                                        MainActivity.this,
+                                                        0,
+                                                        intent,
+                                                        PendingIntent.FLAG_UPDATE_CURRENT
+                                                );
+                                                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                                                long period = 24 * 60 * 60 * 1000;
+                                                TimerTask task = new TimerTask() {
+                                                    @Override
+                                                    public void run() {
+                                                        databaseReference.child("pump").setValue(false);
+                                                        String message = "Pump is off";
+                                                        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "My notification");
+                                                        builder.setSmallIcon(R.drawable.ic_message);
+                                                        builder.setContentTitle("New Notification");
+                                                        builder.setContentText(message);
+                                                        builder.setAutoCancel(true);
+
+                                                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(MainActivity.this);
+                                                        notificationManagerCompat.notify(1, builder.build());
+                                                    }
+                                                };
+                                                Timer timer = new Timer();
+                                                timer.schedule(task, dateSchedule, period);
+                                            }
+                                        },24,0, true
+                                );
+                                timePickerDialog.updateTime(t2Hour, t2Minute);
+                                timePickerDialog.show();
+                            }
+                        });
+                        tv_time.setText("Auto time is on");
+                    }else {
+                        databaseReference.child("time").setValue(b);
+                        tv_time.setText("Auto time is off");
+                        tv_timer1.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                tv_time.setText("No handle when off");
+                                tv_timer1.setText("StartTime");
+                            }
+                        });
+                        tv_timer2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                tv_time.setText("No handle when off");
+                                tv_timer2.setText("EndTime");
+                            }
+                        });
+                    }
                 }
+
 
             }
         });
-
-
         switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -339,20 +357,13 @@ public class MainActivity extends AppCompatActivity implements ExampleDialog.Exa
                 }
             });
         }
-
         btn_Personal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 redirect();
             }
         });
-
-
     }
-
-
-
-
 
     public void temp(){
         Range range = new Range();
@@ -364,7 +375,6 @@ public class MainActivity extends AppCompatActivity implements ExampleDialog.Exa
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String temp = snapshot.child("temp").getValue().toString();
-
                 Log.w(TAG, String.valueOf(snapshot));
                 arcGauge1.addRange(range);
                 arcGauge1.setMinValue(0.0);
@@ -382,7 +392,6 @@ public class MainActivity extends AppCompatActivity implements ExampleDialog.Exa
 
 
     }
-
     public void humid(){
         Range range = new Range();
         range.setColor(Color.parseColor("#9BED3B"));
@@ -410,7 +419,6 @@ public class MainActivity extends AppCompatActivity implements ExampleDialog.Exa
 
 
     }
-
     public void getData(){
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -418,6 +426,33 @@ public class MainActivity extends AppCompatActivity implements ExampleDialog.Exa
                 Boolean time = (Boolean) snapshot.child("time").getValue();
                 Boolean auto = (Boolean) snapshot.child("auto").getValue();
                 Boolean pump =(Boolean) snapshot.child("pump").getValue();
+                String humi = snapshot.child("humi").getValue().toString();
+                String temp = snapshot.child("temp").getValue().toString();
+                String tempAuto = tv_temp.getText().toString();
+                String humiAuto = tv_humi.getText().toString();
+                if(Integer.parseInt(humi) >= Integer.parseInt(humiAuto)){
+                    String message = "Temperature over specified";
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "My notification");
+                    builder.setSmallIcon(R.drawable.ic_message);
+                    builder.setContentTitle("New Notification");
+                    builder.setContentText(message);
+                    builder.setAutoCancel(true);
+
+                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(MainActivity.this);
+                    notificationManagerCompat.notify(1, builder.build());
+                }
+
+                if(Integer.parseInt(temp) >= Integer.parseInt(tempAuto)){
+                    String message = "Humidity over specified";
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "My notification");
+                    builder.setSmallIcon(R.drawable.ic_message);
+                    builder.setContentTitle("New Notification");
+                    builder.setContentText(message);
+                    builder.setAutoCancel(true);
+
+                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(MainActivity.this);
+                    notificationManagerCompat.notify(1, builder.build());
+                }
                 if(pump == true){
                     switchCompat.setChecked(true);
                 }else {
@@ -436,6 +471,7 @@ public class MainActivity extends AppCompatActivity implements ExampleDialog.Exa
                 }else {
                     tb_auto.setChecked(false);
                 }
+
             }
 
             @Override
@@ -444,7 +480,6 @@ public class MainActivity extends AppCompatActivity implements ExampleDialog.Exa
             }
         });
     }
-
     public void openDialog(){
         ExampleDialog exampleDialog = new ExampleDialog();
         exampleDialog.show(getSupportFragmentManager(), "example dialog");
@@ -456,7 +491,6 @@ public class MainActivity extends AppCompatActivity implements ExampleDialog.Exa
         tv_temp.setText(temp);
         tv_humi.setText(humi);
     }
-
     public void getView(){
         btn_Verify = findViewById(R.id.btn_Verify);
         tv_Verify = findViewById(R.id.tv_Verify);
@@ -475,13 +509,11 @@ public class MainActivity extends AppCompatActivity implements ExampleDialog.Exa
         tb_auto =  findViewById(R.id.tb_auto);
         tb_time = findViewById(R.id.tb_time);
     }
-
     public void Logout(View view) {
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         finish();
     }
-
     public void redirect(){
         Intent intent = new Intent(MainActivity.this, PersonalActivity.class);
         startActivity(intent);

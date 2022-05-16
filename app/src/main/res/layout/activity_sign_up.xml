@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".SignUpActivity">
 
     <LinearLayout
@@ -19,14 +20,14 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:textColor="@color/colorPrimaryText"
+            android:textColor="@color/white"
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Stay connected" />
 
         <TextView
-            android:textColor="@color/colorPrimaryText"
+            android:textColor="@color/white"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -88,7 +89,7 @@
             android:text="Sign Up" />
 
         <TextView
-            android:textColor="@color/colorPrimaryText"
+            android:textColor="@color/white"
             android:id="@+id/btn_cLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

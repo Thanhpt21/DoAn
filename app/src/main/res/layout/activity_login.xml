@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".LoginActivity">
 
     <LinearLayout
@@ -19,18 +20,21 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:textColor="@color/colorPrimaryText"
+            android:textColor="@color/green"
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Login Now" />
+            android:textSize="30dp"
+            android:text="Login Now"
+            />
 
         <TextView
-            android:textColor="@color/colorPrimaryText"
+            android:textColor="@color/green"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:textSize="20dp"
             android:text="Please login to continue using app" />
 
         <EditText
@@ -57,26 +61,28 @@
 
         <Button
             android:id="@+id/btn_Login"
-            android:background="@drawable/btn_primary"
+            android:background="@drawable/background_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Login" />
 
         <TextView
-            android:textColor="@color/colorPrimaryText"
+            android:textColor="@color/green"
             android:id="@+id/btn_cSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:textAlignment="center"
+            android:textSize="20dp"
             android:text="Don't have an account? Signup" />
 
         <TextView
-            android:textColor="@color/colorPrimaryText"
+            android:textColor="@color/green"
             android:id="@+id/tv_ForgetPassword"
             android:textAlignment="center"
             android:layout_marginTop="12dp"
+            android:textSize="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Forget password ?" />

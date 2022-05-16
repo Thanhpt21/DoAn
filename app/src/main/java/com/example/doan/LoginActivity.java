@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,8 +31,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getView();
         firebaseAuth = FirebaseAuth.getInstance();
+        if(firebaseAuth.getCurrentUser() != null){
+            Toast.makeText(LoginActivity.this, "User is already logged in", Toast.LENGTH_SHORT).show();
+            redirect("MAIN");
+        }
 
         btn_Login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         btn_cSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                redirect();
+                redirect("SIGNUP");
             }
         });
 
@@ -118,9 +124,16 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public  void redirect(){
-        Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-        startActivity(intent);
-        finish();
+    private void redirect(String name){
+        if(name == "MAIN"){
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        if(name == "SIGNUP"){
+            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

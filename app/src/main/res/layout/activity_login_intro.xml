@@ -4,51 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".LoginIntro">
 
     <TextView
-        android:id="@+id/tv_LoginSubHeader"
+        android:id="@+id/tv_intro1"
         style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
+        android:layout_marginTop="100dp"
+        android:textColor="@color/green"
         android:text="An intelligent and economical \n system designed for water pressure management"
+        android:transitionName="splash_text1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_LoginHeader"
+        android:id="@+id/tv_intro"
         style="@style/TextAppearance.AppCompat.Headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Welcome to automatic water pumps"
+        android:transitionName="splash_text"
+        android:textColor="@color/green"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_LoginSubHeader"
+        app:layout_constraintBottom_toTopOf="@+id/tv_intro1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/iv_intro"
         android:src="@drawable/ic_undraw_speed_test_re_pe1f"
         android:layout_width="180dp"
         android:layout_height="180dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_LoginHeader"
+        android:transitionName="splash_img"
+        app:layout_constraintBottom_toTopOf="@+id/tv_intro"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/btn_GetStarted"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Get Started"
-        app:layout_constraintEnd_toEndOf="@+id/tv_LoginSubHeader"
-        app:layout_constraintStart_toStartOf="@+id/tv_LoginSubHeader"
-        app:layout_constraintTop_toBottomOf="@+id/tv_LoginSubHeader" />
 
     <ImageView
         android:src="@drawable/ic_wave"
