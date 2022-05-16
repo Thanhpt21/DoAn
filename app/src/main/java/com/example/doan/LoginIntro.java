@@ -23,7 +23,7 @@ public class LoginIntro extends AppCompatActivity {
     ImageView iv_intro;
     TextView tv_intro, tv_intro1;
     Animation topAnim, bottomAnim;
-    private static int DELAY_TIME = 6000;
+    private static int DELAY_TIME = 5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

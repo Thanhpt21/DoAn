@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">DoAn</string>
+    <string name="action_home">Home</string>
+    <string name="action_auto">Auto</string>
+    <string name="action_schedule">Schedule</string>
+    <string name="action_personal">Personal</string>
+    <string name="action_logout">Logout</string>
 </resources>

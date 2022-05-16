@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 public class ExampleDialog extends AppCompatDialogFragment {
-    private EditText et_temp, et_humi;
+    private EditText et_temp, et_humid;
     private ExampleDialogListener listener;
 
     @NonNull
@@ -36,12 +36,12 @@ public class ExampleDialog extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String temp = et_temp.getText().toString();
-                        String humi = et_humi.getText().toString();
+                        String humi = et_humid.getText().toString();
                         listener.applyTexts(temp, humi);
                     }
                 });
         et_temp = view.findViewById(R.id.et_temp);
-        et_humi = view.findViewById(R.id.et_humi);
+        et_humid = view.findViewById(R.id.et_humid);
         return builder.create();
     }
 
@@ -56,6 +56,6 @@ public class ExampleDialog extends AppCompatDialogFragment {
     }
 
     public interface ExampleDialogListener{
-        void applyTexts(String temp, String humi);
+        void applyTexts(String temp, String humid);
     }
 }
