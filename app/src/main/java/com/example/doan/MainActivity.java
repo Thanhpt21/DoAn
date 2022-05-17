@@ -124,26 +124,7 @@ public class MainActivity extends AppCompatActivity {
         humid();
         getData();
 
-        if(!user.isEmailVerified()){
-            tv_Verify.setVisibility(View.VISIBLE);
-            btn_Verify.setVisibility(View.VISIBLE);
-            btn_Verify.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Toast.makeText(view.getContext(), "Verification Email has been sent", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, "onFailure: Email not send " + e.getMessage());
-                        }
-                    });
-                }
-            });
-        }
+
     }
 
     public void temp(){
@@ -204,35 +185,20 @@ public class MainActivity extends AppCompatActivity {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                Boolean auto = (Boolean) snapshot.child("auto").getValue();
+                Boolean auto = (Boolean) snapshot.child("auto").getValue();
+                Boolean time = (Boolean) snapshot.child("time").getValue();
                 Boolean pump =(Boolean) snapshot.child("pump").getValue();
-//                String humi = snapshot.child("humi").getValue().toString();
-//                String temp = snapshot.child("temp").getValue().toString();
-//                String tempAuto = tv_temp.getText().toString();
-//                String humiAuto = tv_humi.getText().toString();
-//                if(Integer.parseInt(humi) >= Integer.parseInt(humiAuto)){
-//                    String message = "Temperature over specified";
-//                    NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "My notification");
-//                    builder.setSmallIcon(R.drawable.ic_message);
-//                    builder.setContentTitle("New Notification");
-//                    builder.setContentText(message);
-//                    builder.setAutoCancel(true);
-//
-//                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(MainActivity.this);
-//                    notificationManagerCompat.notify(1, builder.build());
-//                }
-//
-//                if(Integer.parseInt(temp) >= Integer.parseInt(tempAuto)){
-//                    String message = "Humidity over specified";
-//                    NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, "My notification");
-//                    builder.setSmallIcon(R.drawable.ic_message);
-//                    builder.setContentTitle("New Notification");
-//                    builder.setContentText(message);
-//                    builder.setAutoCancel(true);
-//
-//                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(MainActivity.this);
-//                    notificationManagerCompat.notify(1, builder.build());
-//                }
+
+                if(auto == true) {
+                    switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                            switchCompat.setChecked(false);
+                        }
+                    });
+                }
+
+
                 if(pump == true){
                     switchCompat.setChecked(true);
                 }else {

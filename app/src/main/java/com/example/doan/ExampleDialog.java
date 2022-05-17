@@ -25,7 +25,7 @@ public class ExampleDialog extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.layout_dialog, null);
 
         builder.setView(view)
-                .setTitle("Enter the minimum temperature and humidity for the pump to turn on")
+                .setTitle("Nhập vào nhiệt độ và độ ẩm tối thiểu mà bạn muốn để chế độ tự động")
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

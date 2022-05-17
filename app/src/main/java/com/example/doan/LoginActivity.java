@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         getView();
         firebaseAuth = FirebaseAuth.getInstance();
         if(firebaseAuth.getCurrentUser() != null){
-            Toast.makeText(LoginActivity.this, "User is already logged in", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, "Người dùng đã đăng nhập", Toast.LENGTH_SHORT).show();
             redirect("MAIN");
         }
 
@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                 final EditText reset = new EditText(view.getContext());
                 final AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(view.getContext());
                 passwordResetDialog.setTitle("Reset password ?");
-                passwordResetDialog.setMessage("Enter your email to received reset link.");
+                passwordResetDialog.setMessage("Nhập vào email nhận link xác nhận.");
                 passwordResetDialog.setView(reset);
                 passwordResetDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
@@ -68,12 +68,12 @@ public class LoginActivity extends AppCompatActivity {
                         firebaseAuth.sendPasswordResetEmail(email).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Toast.makeText(LoginActivity.this, "Reset link send to your email", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Link reset đã được gữi", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(LoginActivity.this, "Error ! Reset link is not send" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Lỗi xảy ra ! Link reset không gữi được" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -103,22 +103,22 @@ public class LoginActivity extends AppCompatActivity {
         String email = et_EmailAddress.getText().toString().trim();
         String password = et_Password.getText().toString().trim();
         if(TextUtils.isEmpty(email)){
-            et_EmailAddress.setError("Email is required");
+            et_EmailAddress.setError("Vui lòng nhập email");
             return;
         }
         if(TextUtils.isEmpty(password)){
-            et_Password.setError("Password is required");
+            et_Password.setError("Vui lòng nhập password");
             return;
         }
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(LoginActivity.this, "Logged in successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công !", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 }else{
-                    Toast.makeText(LoginActivity.this, "Error !" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Đã xảy ra lỗi !" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

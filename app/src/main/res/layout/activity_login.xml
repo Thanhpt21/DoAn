@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="30dp"
-            android:text="Login Now"
+            android:text="Đăng nhập"
             />
 
         <TextView
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="20dp"
-            android:text="Please login to continue using app" />
+            android:text="Vui lòng đăng nhập để sử dụng" />
 
         <EditText
             android:background="@drawable/edit_text_background"
@@ -65,7 +65,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Login" />
+            android:textColor="@color/white"
+            android:text="Đăng nhập" />
 
         <TextView
             android:textColor="@color/white"
@@ -75,7 +76,7 @@
             android:layout_marginTop="24dp"
             android:textAlignment="center"
             android:textSize="20dp"
-            android:text="Don't have an account? Signup" />
+            android:text="Bạn chưa có tài khoản? Đăng ký ngay" />
 
         <TextView
             android:textColor="@color/white"
@@ -85,7 +86,7 @@
             android:textSize="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Forget password ?" />
+            android:text="Quên mật khẩu?" />
     </LinearLayout>
 
 

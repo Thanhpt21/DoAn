@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="30dp"
-            android:text="Sign Up" />
+            android:text="Đăng ký" />
 
         <TextView
             android:textColor="@color/white"
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:textSize="18dp"
             android:layout_marginTop="8dp"
-            android:text="Enter your email address and pass word \nto get access to your account" />
+            android:text="Nhập email và password của bạn \nđể có quyền truy cập vào tài khoản" />
 
         <EditText
             android:background="@drawable/edit_text_background"
@@ -88,7 +88,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Sign Up" />
+            android:textColor="@color/white"
+            android:text="Đăng ký" />
 
         <TextView
             android:textColor="@color/white"
@@ -98,7 +99,7 @@
             android:layout_marginTop="24dp"
             android:textAlignment="center"
             android:textSize="20dp"
-            android:text="Already have an account?" />
+            android:text="Bạn đã có tài khoản?" />
     </LinearLayout>
 
     <ImageView

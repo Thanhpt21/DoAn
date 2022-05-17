@@ -1,5 +1,8 @@
 package com.example.doan;
 
+import static android.content.ContentValues.TAG;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -21,12 +24,16 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -57,30 +64,29 @@ public class ScheduleActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance("https://doan-4abdf-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Device");
 
+        getData();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel notificationChannel = new NotificationChannel("My notification", "My notification", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        Boolean time = preferences.getBoolean("time", true);
-        tb_schedule.setChecked(time);
-
-        tb_schedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean("time", tb_schedule.isChecked());
-                editor.commit();
-            }
-        });
 
         tb_schedule.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
                     databaseReference.child("time").setValue(b);
+                    databaseReference.child("pump").setValue(false);
+                    String message = "Chế độ hẹn giờ đang bật !";
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(ScheduleActivity.this, "My notification");
+                    builder.setSmallIcon(R.drawable.ic_message);
+                    builder.setContentTitle("Thông báo mới !");
+                    builder.setContentText(message);
+                    builder.setAutoCancel(true);
+
+                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(ScheduleActivity.this);
+                    notificationManagerCompat.notify(2, builder.build());
                     tv_timer1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -128,10 +134,10 @@ public class ScheduleActivity extends AppCompatActivity {
                                                 @Override
                                                 public void run() {
                                                     databaseReference.child("pump").setValue(true);
-                                                    String message = "Pump is on";
+                                                    String message = "Máy bơm đang bật !";
                                                     NotificationCompat.Builder builder = new NotificationCompat.Builder(ScheduleActivity.this, "My notification");
                                                     builder.setSmallIcon(R.drawable.ic_message);
-                                                    builder.setContentTitle("New Notification");
+                                                    builder.setContentTitle("Thông báo mới !");
                                                     builder.setContentText(message);
                                                     builder.setAutoCancel(true);
 
@@ -206,10 +212,10 @@ public class ScheduleActivity extends AppCompatActivity {
                                                 @Override
                                                 public void run() {
                                                     databaseReference.child("pump").setValue(false);
-                                                    String message = "Pump is off";
+                                                    String message = "Máy bơm đã tắt !";
                                                     NotificationCompat.Builder builder = new NotificationCompat.Builder(ScheduleActivity.this, "My notification");
                                                     builder.setSmallIcon(R.drawable.ic_message);
-                                                    builder.setContentTitle("New Notification");
+                                                    builder.setContentTitle("Thông báo mới !");
                                                     builder.setContentText(message);
                                                     builder.setAutoCancel(true);
 
@@ -226,21 +232,32 @@ public class ScheduleActivity extends AppCompatActivity {
                             timePickerDialog.show();
                         }
                     });
-                    tv_time.setText("Auto time is on");
+                    tv_time.setText("Đang bật");
                 }else {
                     databaseReference.child("time").setValue(b);
-                    tv_time.setText("Auto time is off");
+                    String message = "Chế độ hẹn giờ đã tắt !";
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(ScheduleActivity.this, "My notification");
+                    builder.setSmallIcon(R.drawable.ic_message);
+                    builder.setContentTitle("Thông báo mới !");
+                    builder.setContentText(message);
+                    builder.setAutoCancel(true);
+
+                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(ScheduleActivity.this);
+                    notificationManagerCompat.notify(2, builder.build());
+                    tv_time.setText("Đã tắt");
                     tv_timer1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            tv_time.setText("No handle when off");
+                            tv_time.setText("Không thể xử lí");
+                            Toast.makeText(ScheduleActivity.this, "Không thể xử lí khi chế độ hẹn giờ tắt!", Toast.LENGTH_SHORT).show();
                             tv_timer1.setText("StartTime");
                         }
                     });
                     tv_timer2.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            tv_time.setText("No handle when off");
+                            tv_time.setText("Không thể xử lí");
+                            Toast.makeText(ScheduleActivity.this, "Không thể xử lí khi chế độ hẹn giờ tắt!", Toast.LENGTH_SHORT).show();
                             tv_timer2.setText("EndTime");
                         }
                     });
@@ -263,6 +280,49 @@ public class ScheduleActivity extends AppCompatActivity {
         tv_timer2.setText(text2);
     }
 
+    public void getData(){
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean time = (Boolean) snapshot.child("time").getValue();
+                Boolean auto = (Boolean) snapshot.child("auto").getValue();
+
+                if(auto == true){
+                    tb_schedule.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                            tv_time.setText("Đã tắt");
+                            String message = "Không thể xữ lý do chế độ tự động đang được bật!";
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(ScheduleActivity.this, "My notification");
+                            builder.setSmallIcon(R.drawable.ic_message);
+                            builder.setContentTitle("Thông báo mới !");
+                            builder.setContentText(message);
+                            builder.setAutoCancel(true);
+
+                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(ScheduleActivity.this);
+                            notificationManagerCompat.notify(1, builder.build());
+                            tb_schedule.setChecked(false);
+                        }
+                    });
+                }else {
+                    if(time == true){
+                        tb_schedule.setChecked(true);
+                        tv_time.setText("Đang bật");
+                    }else {
+                        tb_schedule.setChecked(false);
+                        tv_time.setText("Đã tắt");
+                    }
+                }
+
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
     public void getView(){
         btn_scheduleBackHome = findViewById(R.id.btn_scheduleBackHome);
@@ -271,6 +331,7 @@ public class ScheduleActivity extends AppCompatActivity {
         tv_timer2 = findViewById(R.id.tv_timer2);
         tv_time = findViewById(R.id.tv_time);
     }
+
 
     public void backHome(){
         Intent intent = new Intent(ScheduleActivity.this, MainActivity.class);

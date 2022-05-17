@@ -53,7 +53,7 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="100dp"
         android:background="@drawable/btn_primary"
-        android:text="Save"
+        android:text="Lưu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_phonePf" />
 
@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:textSize="20dp"
         android:textColor="@color/white"
-        android:text="Name: "
+        android:text="Tên: "
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
@@ -98,7 +98,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginStart="100dp"
         android:textColor="@color/white"
-        android:text="Phone"
+        android:text="Số điện thoại"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_emailPf" />
@@ -108,7 +108,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_btn"
-        android:text="Back"
+        android:textColor="@color/white"
+        android:text="Quay về trang chủ"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -118,7 +119,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Edit Profile"
+        android:text="Cập nhật thông tin"
         android:textColor="@color/white"
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"

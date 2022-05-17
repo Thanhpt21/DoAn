@@ -1,5 +1,7 @@
 package com.example.doan;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -11,6 +13,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,8 +32,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class PersonalActivity extends AppCompatActivity {
-    TextView tv_name, tv_email, tv_phone;
-    Button btn_Back, btn_ResetPass, btn_ChangeProfile;
+    TextView tv_name, tv_email, tv_phone, tv_Verify;
+    Button btn_Back, btn_ResetPass, btn_ChangeProfile,btn_Verify;
     ImageView imgv_Profile;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
@@ -67,6 +70,27 @@ public class PersonalActivity extends AppCompatActivity {
         userID = firebaseAuth.getCurrentUser().getUid();
         user = firebaseAuth.getCurrentUser();
 
+        if(!user.isEmailVerified()){
+            tv_Verify.setVisibility(View.VISIBLE);
+            btn_Verify.setVisibility(View.VISIBLE);
+            btn_Verify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(view.getContext(), "Xác thực email đã được gửi", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "onFailure: Email not send " + e.getMessage());
+                        }
+                    });
+                }
+            });
+        }
+
         DocumentReference documentReference = firebaseFirestore.collection("users").document(userID);
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
@@ -83,7 +107,7 @@ public class PersonalActivity extends AppCompatActivity {
                 final EditText resetPass = new EditText(view.getContext());
                 final AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(view.getContext());
                 passwordResetDialog.setTitle("Reset password ?");
-                passwordResetDialog.setMessage("Enter new password > 6 characters long.");
+                passwordResetDialog.setMessage("Nhập vào password lớn hơn 6 kí tự !");
                 passwordResetDialog.setView(resetPass);
                 passwordResetDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
@@ -92,12 +116,12 @@ public class PersonalActivity extends AppCompatActivity {
                         user.updatePassword(newPassword).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Toast.makeText(PersonalActivity.this, "Password reset successfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PersonalActivity.this, "Password reset thành công !", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(PersonalActivity.this, "Password reset Failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PersonalActivity.this, "Password reset thất bại !", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -120,9 +144,11 @@ public class PersonalActivity extends AppCompatActivity {
         tv_name = findViewById(R.id.tv_name);
         tv_email = findViewById(R.id.tv_email);
         tv_phone = findViewById(R.id.tv_phone);
+        tv_Verify = findViewById(R.id.tv_Verify);
         btn_Back = findViewById(R.id.btn_Back);
         btn_ChangeProfile = findViewById(R.id.btn_ChangeProfile);
         btn_ResetPass = findViewById(R.id.btn_ResetPass);
+        btn_Verify = findViewById(R.id.btn_Verify);
         imgv_Profile = findViewById(R.id.imgv_Profile);
     }
 
