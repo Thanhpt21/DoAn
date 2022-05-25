@@ -30,7 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class AutoActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class AutoActivity extends AppCompatActivity implements ExampleDialog.ExampleDialogListener {
     ToggleButton tb_auto;
     TextView tv_valueTemp, tv_valueHumid, tv_statusAuto;
     Button btn_setValue, btn_autoBackHome;
@@ -39,6 +39,10 @@ public class AutoActivity extends AppCompatActivity implements AdapterView.OnIte
     FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference;
 
+    public static String SHARED_PREF3 = "shared3", SHARED_PREF4 = "shared4";
+    public static String TEXT3 = "text3", TEXT4 = "text4";
+    public String text3, text4;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +50,12 @@ public class AutoActivity extends AppCompatActivity implements AdapterView.OnIte
         getView();
 
 
+
+
+
+
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance("https://doan-4abdf-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Device");
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.numbers, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner1.setAdapter(adapter);
-        spinner1.setOnItemSelectedListener(this);
         getData();
 
         tb_auto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -66,8 +70,27 @@ public class AutoActivity extends AppCompatActivity implements AdapterView.OnIte
                             String humid = snapshot.child("humi").getValue().toString();
                             String temp = snapshot.child("temp").getValue().toString();
 
-                            String tempAuto = tv_valueTemp.getText().toString();
-                            String humidAuto = tv_valueHumid.getText().toString();
+                            SingletonState singletonState = SingletonState.getInstance();
+                            String tempAuto = singletonState.getTemp();
+                            Log.d("sss",tempAuto);
+                            tv_valueHumid.setText(tempAuto);
+//                            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF3, MODE_PRIVATE);
+//                            SharedPreferences.Editor editor = sharedPreferences.edit();
+//                            editor.putString(TEXT3, tempAuto);
+//                            editor.apply();
+
+
+                            //String humidAuto = tv_valueHumid.getText().toString();
+                            String humidAuto = singletonState.getHumid();
+                            Log.d("sss1",humidAuto);
+                            tv_valueHumid.setText(humidAuto);
+
+
+//                            SharedPreferences sharedPreferences1 = getSharedPreferences(SHARED_PREF4, MODE_PRIVATE);
+//                            SharedPreferences.Editor editor1 = sharedPreferences1.edit();
+//                            editor1.putString(TEXT4, humidAuto);
+//                            editor1.apply();
+
                             tv_statusAuto.setText(auto.toString());
                             if(auto == true){
                                 if(Float.parseFloat(humid) >= Float.parseFloat(humidAuto) || Float.parseFloat(temp) >= Float.parseFloat(tempAuto) ){
@@ -95,6 +118,8 @@ public class AutoActivity extends AppCompatActivity implements AdapterView.OnIte
 
         });
 
+        //update();
+
         btn_setValue.setOnClickListener(view -> {
             openDialog();
         });
@@ -110,11 +135,23 @@ public class AutoActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-//    @Override
-//    public void applyTexts(String temp, String humid) {
-//        tv_valueTemp.setText(temp);
-//        tv_valueHumid.setText(humid);
-//    }
+    @Override
+    public void applyTexts(String temp, String humid) {
+        SingletonState singletonState = SingletonState.getInstance();
+        singletonState.setTemp(temp);
+        singletonState.setHumid(humid);
+        tv_valueTemp.setText(temp);
+        tv_valueHumid.setText(humid);
+    }
+
+    public void update(){
+        SharedPreferences sharedPreferences1 = getSharedPreferences(SHARED_PREF3, MODE_PRIVATE);
+        text3 = sharedPreferences1.getString(TEXT3,"");
+        tv_valueTemp.setText(text3);
+        SharedPreferences sharedPreferences2 = getSharedPreferences(SHARED_PREF4, MODE_PRIVATE);
+        text4 = sharedPreferences2.getString(TEXT4,"");
+        tv_valueHumid.setText(text4);
+    }
 
     public void getView(){
         tb_auto = findViewById(R.id.tb_auto);
@@ -188,6 +225,13 @@ public class AutoActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(TEXT3, tv_valueTemp.getText().toString());
+        outState.putString(TEXT4, tv_valueHumid.getText().toString());
+    }
+
 
     public void backHome(){
         Intent intent = new Intent(AutoActivity.this, MainActivity.class);
@@ -196,14 +240,4 @@ public class AutoActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        String textTemp = adapterView.getItemAtPosition(i).toString();
-        tv_valueTemp.setText(textTemp);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
 }

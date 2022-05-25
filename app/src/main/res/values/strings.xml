@@ -6,13 +6,6 @@
     <string name="action_personal">Personal</string>
     <string name="action_logout">Logout</string>
     <string-array name="numbers">
-        <item>20</item>
-        <item>21</item>
-        <item>22</item>
-        <item>23</item>
-        <item>24</item>
-        <item>25</item>
-        <item>26</item>
         <item>27</item>
         <item>28</item>
         <item>29</item>
@@ -24,8 +17,18 @@
         <item>35</item>
         <item>36</item>
         <item>37</item>
-        <item>38</item>
-        <item>39</item>
-        <item>40</item>
+    </string-array>
+    <string-array name="numbersHumid">
+        <item>67</item>
+        <item>68</item>
+        <item>69</item>
+        <item>70</item>
+        <item>71</item>
+        <item>72</item>
+        <item>73</item>
+        <item>74</item>
+        <item>75</item>
+        <item>76</item>
+        <item>77</item>
     </string-array>
 </resources>
