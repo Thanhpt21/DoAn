@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
+    android:background="@color/main_bg"
     tools:context=".MainActivity">
 
 
@@ -17,7 +17,6 @@
         android:layout_width="250dp"
         android:layout_height="200dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/gauge_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +28,6 @@
         android:layout_width="250dp"
         android:layout_height="200dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/gauge_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10"
@@ -42,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Nhiệt độ (*C)"
-        android:textColor="@color/white"
+        android:textColor="@color/teal_200"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Độ ẩm (%)"
-        android:textColor="@color/white"
+        android:textColor="@color/teal_200"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +69,7 @@
         android:layout_marginStart="92dp"
         android:layout_marginTop="46dp"
         android:text="Trạng thái:"
-        android:textColor="@color/white"
+        android:textColor="@color/teal_200"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +97,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_bottom_nav"
         app:labelVisibilityMode="labeled"
-        app:itemBackground="@drawable/background_btn"
+        app:itemBackground="@color/nav"
         app:itemIconTint="@color/color_bottom_nav"
         app:itemTextColor="@color/color_bottom_nav"/>
 

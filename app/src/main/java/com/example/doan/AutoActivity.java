@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -12,8 +13,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -26,10 +30,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class AutoActivity extends AppCompatActivity implements ExampleDialog.ExampleDialogListener {
+public class AutoActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     ToggleButton tb_auto;
     TextView tv_valueTemp, tv_valueHumid, tv_statusAuto;
     Button btn_setValue, btn_autoBackHome;
+    Spinner spinner1;
 
     FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference;
@@ -43,7 +48,10 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
 
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance("https://doan-4abdf-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Device");
-
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.numbers, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner1.setAdapter(adapter);
+        spinner1.setOnItemSelectedListener(this);
         getData();
 
         tb_auto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -51,30 +59,18 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
                     databaseReference.child("auto").setValue(b);
-                    String message = "Chế độ tự động đang bật";
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(AutoActivity.this, "My notification");
-                    builder.setSmallIcon(R.drawable.ic_message);
-                    builder.setContentTitle("Thông báo mới");
-                    builder.setContentText(message);
-                    builder.setAutoCancel(true);
-
-                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(AutoActivity.this);
-                    notificationManagerCompat.notify(1, builder.build());
                     databaseReference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Boolean auto =(Boolean) snapshot.child("auto").getValue();
                             String humid = snapshot.child("humi").getValue().toString();
                             String temp = snapshot.child("temp").getValue().toString();
+
                             String tempAuto = tv_valueTemp.getText().toString();
                             String humidAuto = tv_valueHumid.getText().toString();
-
-
                             tv_statusAuto.setText(auto.toString());
                             if(auto == true){
-                                if(Integer.parseInt(humid) >= Integer.parseInt(humidAuto)){
-                                    databaseReference.child("pump").setValue(true);
-                                }else if(Integer.parseInt(temp) >= Integer.parseInt(tempAuto)){
+                                if(Float.parseFloat(humid) >= Float.parseFloat(humidAuto) || Float.parseFloat(temp) >= Float.parseFloat(tempAuto) ){
                                     databaseReference.child("pump").setValue(true);
                                 }else {
                                     databaseReference.child("pump").setValue(false);
@@ -94,15 +90,6 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
 
                 }else {
                     databaseReference.child("auto").setValue(b);
-                    String message = "Chế độ tự động đã tắt";
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(AutoActivity.this, "My notification");
-                    builder.setSmallIcon(R.drawable.ic_message);
-                    builder.setContentTitle("Thông báo mới");
-                    builder.setContentText(message);
-                    builder.setAutoCancel(true);
-
-                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(AutoActivity.this);
-                    notificationManagerCompat.notify(2, builder.build());
                 }
             }
 
@@ -123,11 +110,11 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
 
     }
 
-    @Override
-    public void applyTexts(String temp, String humid) {
-        tv_valueTemp.setText(temp);
-        tv_valueHumid.setText(humid);
-    }
+//    @Override
+//    public void applyTexts(String temp, String humid) {
+//        tv_valueTemp.setText(temp);
+//        tv_valueHumid.setText(humid);
+//    }
 
     public void getView(){
         tb_auto = findViewById(R.id.tb_auto);
@@ -136,38 +123,35 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
         tv_statusAuto = findViewById(R.id.tv_statusAuto);
         btn_setValue = findViewById(R.id.btn_setValue);
         btn_autoBackHome = findViewById(R.id.btn_autoBackHome);
+        spinner1 = findViewById(R.id.spinner1);
     }
 
     public void getData(){
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean pump = (Boolean) snapshot.child("pump").getValue();
                 Boolean auto = (Boolean) snapshot.child("auto").getValue();
                 Boolean time = (Boolean) snapshot.child("time").getValue();
+
                 if (time == true) {
                     tb_auto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                            tv_statusAuto.setText("Đã tắt");
-                            String message = "Không thể xữ lý do chế độ hẹn giờ đang được bật!";
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(AutoActivity.this, "My notification");
-                            builder.setSmallIcon(R.drawable.ic_message);
-                            builder.setContentTitle("Thông báo mới !");
-                            builder.setContentText(message);
-                            builder.setAutoCancel(true);
-
-                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(AutoActivity.this);
-                            notificationManagerCompat.notify(1, builder.build());
+                            tv_statusAuto.setText("Hẹn giờ đang bật");
                             tb_auto.setChecked(false);
+
                         }
                     });
                 }else {
                     if (auto == true) {
+                        tb_auto.setChecked(true);
+                        tv_statusAuto.setText("Đang bật");
                         String humid = snapshot.child("humi").getValue().toString();
                         String temp = snapshot.child("temp").getValue().toString();
                         String tempAuto = tv_valueTemp.getText().toString();
                         String humidAuto = tv_valueHumid.getText().toString();
-                        if(Integer.parseInt(humid) >= Integer.parseInt(humidAuto) || Integer.parseInt(temp) >= Integer.parseInt(tempAuto) ){
+                        if(Float.parseFloat(humid) >= Float.parseFloat(humidAuto) || Float.parseFloat(temp) >= Float.parseFloat(tempAuto) ){
                             String message = "Máy bơm đang bật do chỉ số nằm trên mức quy định";
                             NotificationCompat.Builder builder = new NotificationCompat.Builder(AutoActivity.this, "My notification");
                             builder.setSmallIcon(R.drawable.ic_message);
@@ -176,7 +160,7 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
                             builder.setAutoCancel(true);
 
                             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(AutoActivity.this);
-                            notificationManagerCompat.notify(2, builder.build());
+                            notificationManagerCompat.notify(1, builder.build());
                         }else {
                             String message = "Máy bơm tắt do chỉ số nằm dưới mức quy định";
                             NotificationCompat.Builder builder = new NotificationCompat.Builder(AutoActivity.this, "My notification");
@@ -186,10 +170,8 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
                             builder.setAutoCancel(true);
 
                             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(AutoActivity.this);
-                            notificationManagerCompat.notify(2, builder.build());
+                            notificationManagerCompat.notify(1, builder.build());
                         }
-                        tb_auto.setChecked(true);
-                        tv_statusAuto.setText("Đang bật");
                     } else {
                         tb_auto.setChecked(false);
                         tv_statusAuto.setText("Đã tắt");
@@ -214,4 +196,14 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
     }
 
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String textTemp = adapterView.getItemAtPosition(i).toString();
+        tv_valueTemp.setText(textTemp);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }

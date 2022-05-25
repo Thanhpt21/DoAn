@@ -78,15 +78,6 @@ public class ScheduleActivity extends AppCompatActivity {
                 if(b){
                     databaseReference.child("time").setValue(b);
                     databaseReference.child("pump").setValue(false);
-                    String message = "Chế độ hẹn giờ đang bật !";
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(ScheduleActivity.this, "My notification");
-                    builder.setSmallIcon(R.drawable.ic_message);
-                    builder.setContentTitle("Thông báo mới !");
-                    builder.setContentText(message);
-                    builder.setAutoCancel(true);
-
-                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(ScheduleActivity.this);
-                    notificationManagerCompat.notify(2, builder.build());
                     tv_timer1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -235,15 +226,6 @@ public class ScheduleActivity extends AppCompatActivity {
                     tv_time.setText("Đang bật");
                 }else {
                     databaseReference.child("time").setValue(b);
-                    String message = "Chế độ hẹn giờ đã tắt !";
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(ScheduleActivity.this, "My notification");
-                    builder.setSmallIcon(R.drawable.ic_message);
-                    builder.setContentTitle("Thông báo mới !");
-                    builder.setContentText(message);
-                    builder.setAutoCancel(true);
-
-                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(ScheduleActivity.this);
-                    notificationManagerCompat.notify(2, builder.build());
                     tv_time.setText("Đã tắt");
                     tv_timer1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -291,19 +273,11 @@ public class ScheduleActivity extends AppCompatActivity {
                     tb_schedule.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                            tv_time.setText("Đã tắt");
-                            String message = "Không thể xữ lý do chế độ tự động đang được bật!";
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(ScheduleActivity.this, "My notification");
-                            builder.setSmallIcon(R.drawable.ic_message);
-                            builder.setContentTitle("Thông báo mới !");
-                            builder.setContentText(message);
-                            builder.setAutoCancel(true);
-
-                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(ScheduleActivity.this);
-                            notificationManagerCompat.notify(1, builder.build());
+                            tv_time.setText("Tự động đang bật");
                             tb_schedule.setChecked(false);
                         }
                     });
+
                 }else {
                     if(time == true){
                         tb_schedule.setChecked(true);
@@ -313,6 +287,8 @@ public class ScheduleActivity extends AppCompatActivity {
                         tv_time.setText("Đã tắt");
                     }
                 }
+
+
 
 
             }

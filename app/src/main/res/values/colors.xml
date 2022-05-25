@@ -8,6 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green">#6FDFDF</color>
+    <color name="main_bg">#646FD4</color>
+    <color name="nav">#242F9B</color>
 
     <color name="thumb1">#9BED3B</color>
     <color name="thumb2">#6F6D6D</color>

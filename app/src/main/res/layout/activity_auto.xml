@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
+    android:background="@color/main_bg"
     tools:context=".AutoActivity">
 
     <TextView
@@ -12,9 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
-        android:textColor="@color/white"
-        android:text="AUTO MODE"
-        android:textSize="40dp"
+        android:textColor="@color/teal_200"
+        android:text="CHẾ ĐỘ TỰ ĐỘNG"
+        android:textSize="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="244dp"
-        android:textColor="@color/white"
+        android:textColor="@color/colorPrimaryDark"
         android:background="@drawable/btn_primary"
         android:text="ToggleButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:layout_marginTop="30dp"
-        android:textColor="@color/white"
+        android:textColor="@color/teal_200"
         android:text="Nhiệt độ (*C):"
         android:textSize="25dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:layout_marginTop="68dp"
-        android:textColor="@color/white"
+        android:textColor="@color/teal_200"
         android:text="Độ ẩm (%) :"
         android:textSize="25dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,10 +59,10 @@
         android:id="@+id/tv_valueTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="100dp"
-        android:textColor="@color/white"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="144dp"
         android:text="32"
+        android:textColor="@color/teal_200"
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tb_auto" />
@@ -72,9 +72,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="68dp"
-        android:layout_marginEnd="100dp"
-        android:textColor="@color/white"
+        android:layout_marginEnd="148dp"
         android:text="72"
+        android:textColor="@color/teal_200"
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_valueTemp" />
@@ -85,7 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:layout_marginTop="64dp"
-        android:textColor="@color/white"
+        android:textColor="@color/colorPrimaryDark"
         android:background="@drawable/btn_primary"
         android:text="Đặt giá trị"
         app:layout_constraintStart_toStartOf="parent"
@@ -97,7 +97,7 @@
         android:layout_height="wrap_content"
         android:text="Quay về trang chủ"
         android:textColor="@color/white"
-        android:background="@drawable/background_btn"
+        android:background="@color/nav"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -108,7 +108,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="76dp"
         android:layout_marginTop="40dp"
-        android:textColor="@color/white"
+        android:textColor="@color/teal_200"
         android:text="Trạng thái :"
         android:textSize="25dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -121,8 +121,19 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="48dp"
         android:text=""
-        android:textColor="@color/white"
+        android:textColor="@color/teal_200"
         android:textSize="15dp"
         app:layout_constraintStart_toEndOf="@+id/tv_status"
         app:layout_constraintTop_toBottomOf="@+id/tv_automode" />
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.87"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tb_auto" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

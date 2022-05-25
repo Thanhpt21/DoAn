@@ -185,19 +185,12 @@ public class MainActivity extends AppCompatActivity {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Boolean auto = (Boolean) snapshot.child("auto").getValue();
-                Boolean time = (Boolean) snapshot.child("time").getValue();
+                Boolean alive = (Boolean) snapshot.child("alive").getValue();
                 Boolean pump =(Boolean) snapshot.child("pump").getValue();
 
-                if(auto == true) {
-                    switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                            switchCompat.setChecked(false);
-                        }
-                    });
+                if(alive == true){
+                    databaseReference.child("alive").setValue(false);
                 }
-
 
                 if(pump == true){
                     switchCompat.setChecked(true);

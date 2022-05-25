@@ -102,8 +102,6 @@ public class EditProfileActivity extends AppCompatActivity {
                         finish();
                     }
                 });
-
-                Toast.makeText(EditProfileActivity.this,"Email đã được thay đổi", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

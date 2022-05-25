@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
+    android:background="@color/main_bg"
     tools:context=".EditProfileActivity">
 
     <EditText
@@ -53,6 +53,7 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="100dp"
         android:background="@drawable/btn_primary"
+        android:textColor="@color/colorPrimaryDark"
         android:text="Lưu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_phonePf" />
@@ -74,7 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:textColor="@color/white"
+        android:textColor="@color/teal_200"
         android:text="Tên: "
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
@@ -85,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginStart="100dp"
-        android:textColor="@color/white"
+        android:textColor="@color/teal_200"
         android:textSize="20dp"
         android:text="Email"
         app:layout_constraintStart_toStartOf="parent"
@@ -97,7 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginStart="100dp"
-        android:textColor="@color/white"
+        android:textColor="@color/teal_200"
         android:text="Số điện thoại"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +108,7 @@
         android:id="@+id/btn_BackEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_btn"
+        android:background="@color/nav"
         android:textColor="@color/white"
         android:text="Quay về trang chủ"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -120,7 +121,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Cập nhật thông tin"
-        android:textColor="@color/white"
+        android:textColor="@color/teal_200"
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
