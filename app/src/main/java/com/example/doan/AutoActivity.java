@@ -34,7 +34,6 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
     ToggleButton tb_auto;
     TextView tv_valueTemp, tv_valueHumid, tv_statusAuto;
     Button btn_setValue, btn_autoBackHome;
-    Spinner spinner1;
 
     FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference;
@@ -48,11 +47,6 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auto);
         getView();
-
-
-
-
-
 
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance("https://doan-4abdf-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Device");
@@ -70,26 +64,23 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
                             String humid = snapshot.child("humi").getValue().toString();
                             String temp = snapshot.child("temp").getValue().toString();
 
-                            SingletonState singletonState = SingletonState.getInstance();
-                            String tempAuto = singletonState.getTemp();
-                            Log.d("sss",tempAuto);
-                            tv_valueHumid.setText(tempAuto);
-//                            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF3, MODE_PRIVATE);
-//                            SharedPreferences.Editor editor = sharedPreferences.edit();
-//                            editor.putString(TEXT3, tempAuto);
-//                            editor.apply();
+                            btn_setValue.setOnClickListener(view -> {
+                                openDialog();
+                                tb_auto.setChecked(false);
+                            });
 
 
-                            //String humidAuto = tv_valueHumid.getText().toString();
-                            String humidAuto = singletonState.getHumid();
-                            Log.d("sss1",humidAuto);
-                            tv_valueHumid.setText(humidAuto);
+                            SharedPreferences sharedPreferences1 = getSharedPreferences(SHARED_PREF3, MODE_PRIVATE);
+                            text3 = sharedPreferences1.getString(TEXT3,"");
+                            tv_valueTemp.setText(text3);
 
+                            SharedPreferences sharedPreferences2 = getSharedPreferences(SHARED_PREF4, MODE_PRIVATE);
+                            text4 = sharedPreferences2.getString(TEXT4,"");
+                            tv_valueHumid.setText(text4);
 
-//                            SharedPreferences sharedPreferences1 = getSharedPreferences(SHARED_PREF4, MODE_PRIVATE);
-//                            SharedPreferences.Editor editor1 = sharedPreferences1.edit();
-//                            editor1.putString(TEXT4, humidAuto);
-//                            editor1.apply();
+                            String tempAuto = tv_valueTemp.getText().toString();
+                            String humidAuto = tv_valueHumid.getText().toString();
+
 
                             tv_statusAuto.setText(auto.toString());
                             if(auto == true){
@@ -118,11 +109,8 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
 
         });
 
-        //update();
 
-        btn_setValue.setOnClickListener(view -> {
-            openDialog();
-        });
+
 
         btn_autoBackHome.setOnClickListener(view -> {
             backHome();
@@ -137,20 +125,18 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
 
     @Override
     public void applyTexts(String temp, String humid) {
-        SingletonState singletonState = SingletonState.getInstance();
-        singletonState.setTemp(temp);
-        singletonState.setHumid(humid);
         tv_valueTemp.setText(temp);
         tv_valueHumid.setText(humid);
-    }
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF3, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(TEXT3, tv_valueTemp.getText().toString());
+        editor.apply();
 
-    public void update(){
-        SharedPreferences sharedPreferences1 = getSharedPreferences(SHARED_PREF3, MODE_PRIVATE);
-        text3 = sharedPreferences1.getString(TEXT3,"");
-        tv_valueTemp.setText(text3);
-        SharedPreferences sharedPreferences2 = getSharedPreferences(SHARED_PREF4, MODE_PRIVATE);
-        text4 = sharedPreferences2.getString(TEXT4,"");
-        tv_valueHumid.setText(text4);
+        SharedPreferences sharedPreferences1 = getSharedPreferences(SHARED_PREF4, MODE_PRIVATE);
+        SharedPreferences.Editor editor1 = sharedPreferences1.edit();
+        editor1.putString(TEXT4, tv_valueHumid.getText().toString());
+        editor1.apply();
+
     }
 
     public void getView(){
@@ -160,14 +146,12 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
         tv_statusAuto = findViewById(R.id.tv_statusAuto);
         btn_setValue = findViewById(R.id.btn_setValue);
         btn_autoBackHome = findViewById(R.id.btn_autoBackHome);
-        spinner1 = findViewById(R.id.spinner1);
     }
 
     public void getData(){
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Boolean pump = (Boolean) snapshot.child("pump").getValue();
                 Boolean auto = (Boolean) snapshot.child("auto").getValue();
                 Boolean time = (Boolean) snapshot.child("time").getValue();
 
@@ -225,12 +209,6 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
         });
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(TEXT3, tv_valueTemp.getText().toString());
-        outState.putString(TEXT4, tv_valueHumid.getText().toString());
-    }
 
 
     public void backHome(){

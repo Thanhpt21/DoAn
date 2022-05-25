@@ -59,8 +59,8 @@
         android:id="@+id/tv_valueTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="144dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="92dp"
         android:text="32"
         android:textColor="@color/teal_200"
         android:textSize="25dp"
@@ -72,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="68dp"
-        android:layout_marginEnd="148dp"
+        android:layout_marginEnd="92dp"
         android:text="72"
         android:textColor="@color/teal_200"
         android:textSize="25dp"
@@ -126,24 +126,5 @@
         app:layout_constraintStart_toEndOf="@+id/tv_status"
         app:layout_constraintTop_toBottomOf="@+id/tv_automode" />
 
-    <Spinner
-        android:id="@+id/spinner1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.87"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tb_auto" />
-
-    <Spinner
-        android:id="@+id/spinner2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.87"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tb_auto" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
