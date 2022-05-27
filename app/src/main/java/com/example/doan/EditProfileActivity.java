@@ -52,8 +52,6 @@ public class EditProfileActivity extends AppCompatActivity {
         et_phonePf.setText(phone);
 
 
-        //Log.d(TAG, "onCreate" + name + " " + email + " " + phone);
-
         btn_BackEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -17,6 +17,8 @@ public class ExampleDialog extends AppCompatDialogFragment {
     private EditText et_temp, et_humid;
     private ExampleDialogListener listener;
 
+
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

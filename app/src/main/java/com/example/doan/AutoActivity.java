@@ -12,18 +12,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,6 +42,8 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auto);
         getView();
+        String tempAuto = tv_valueTemp.getText().toString();
+        String humidAuto = tv_valueHumid.getText().toString();
 
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance("https://doan-4abdf-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Device");
@@ -77,9 +74,6 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
                             SharedPreferences sharedPreferences2 = getSharedPreferences(SHARED_PREF4, MODE_PRIVATE);
                             text4 = sharedPreferences2.getString(TEXT4,"");
                             tv_valueHumid.setText(text4);
-
-                            String tempAuto = tv_valueTemp.getText().toString();
-                            String humidAuto = tv_valueHumid.getText().toString();
 
 
                             tv_statusAuto.setText(auto.toString());

@@ -22,7 +22,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -82,24 +81,24 @@ public class SignUpActivity extends AppCompatActivity {
         String name = et_Name.getText().toString().trim();
         String phone = et_Phone.getText().toString().trim();
         if(TextUtils.isEmpty(email)){
-            et_EmailAddress.setError("Email is required");
+            et_EmailAddress.setError("Vui lòng điền email");
             return;
         }
         if(TextUtils.isEmpty(password)){
-            et_Password.setError("Password is required");
+            et_Password.setError("Vui lòng điền password");
             return;
         }
         if(TextUtils.isEmpty(name)){
-            et_Name.setError("Name is required");
+            et_Name.setError("Vui lòng điền tên");
             return;
         }
         if(TextUtils.isEmpty(phone)){
-            et_Phone.setError("Number Phone is required");
+            et_Phone.setError("Vui lòng điền số điện thoại");
             return;
         }
 
         if(password.length() < 6){
-            et_Password.setError("Password must be >=6 characters");
+            et_Password.setError("Mật khẩu phải >= 6 kí tự");
             return;
         }
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -111,16 +110,16 @@ public class SignUpActivity extends AppCompatActivity {
                     fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
-                            Toast.makeText(SignUpActivity.this, "Password and ConfirmPassword do not match", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpActivity.this, "Password và ConfirmPassword không khớp", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, "onFailure: Email not send " + e.getMessage());
+                            Log.d(TAG, "onFailure: Email chưa được gửi " + e.getMessage());
                         }
                     });
 
-                    Toast.makeText(SignUpActivity.this, "User created success", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "Tạo tài khoản thành công", Toast.LENGTH_SHORT).show();
                     userID = firebaseAuth.getCurrentUser().getUid();
                     DocumentReference documentReference = firebaseFirestore.collection("users").document(userID);
                     Map<String,Object> user = new HashMap<>();
