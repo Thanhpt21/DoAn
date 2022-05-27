@@ -115,8 +115,8 @@
 
     <TextView
         android:id="@+id/tv_time"
-        android:layout_width="3dp"
-        android:layout_height="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginTop="32dp"
         android:text=""

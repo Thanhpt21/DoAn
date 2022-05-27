@@ -78,7 +78,7 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
 
                             tv_statusAuto.setText(auto.toString());
                             if(auto == true){
-                                if(Float.parseFloat(humid) >= Float.parseFloat(humidAuto) || Float.parseFloat(temp) >= Float.parseFloat(tempAuto) ){
+                                if(Float.parseFloat(humid) <= Float.parseFloat(humidAuto) || Float.parseFloat(temp) >= Float.parseFloat(tempAuto) ){
                                     databaseReference.child("pump").setValue(true);
                                 }else {
                                     databaseReference.child("pump").setValue(false);
@@ -166,7 +166,7 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
                         String temp = snapshot.child("temp").getValue().toString();
                         String tempAuto = tv_valueTemp.getText().toString();
                         String humidAuto = tv_valueHumid.getText().toString();
-                        if(Float.parseFloat(humid) >= Float.parseFloat(humidAuto) || Float.parseFloat(temp) >= Float.parseFloat(tempAuto) ){
+                        if(Float.parseFloat(humid) <= Float.parseFloat(humidAuto) || Float.parseFloat(temp) >= Float.parseFloat(tempAuto) ){
                             String message = "Máy bơm đang bật do chỉ số nằm trên mức quy định";
                             NotificationCompat.Builder builder = new NotificationCompat.Builder(AutoActivity.this, "My notification");
                             builder.setSmallIcon(R.drawable.ic_message);
@@ -185,7 +185,7 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
                             builder.setAutoCancel(true);
 
                             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(AutoActivity.this);
-                            notificationManagerCompat.notify(1, builder.build());
+                            notificationManagerCompat.notify(2, builder.build());
                         }
                     } else {
                         tb_auto.setChecked(false);
