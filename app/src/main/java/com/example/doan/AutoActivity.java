@@ -37,13 +37,32 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
     public static String TEXT3 = "text3", TEXT4 = "text4";
     public String text3, text4;
 
+
+
+    DBHelper db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auto);
         getView();
+
+        db = DBHelper.getInstance(Constants.PACKAGE_NAME,"IOT");
+
         String tempAuto = tv_valueTemp.getText().toString();
         String humidAuto = tv_valueHumid.getText().toString();
+
+//        SharedPreferences sharedPreferences1 = getSharedPreferences(SHARED_PREF3, MODE_PRIVATE);
+//        text3 = sharedPreferences1.getString(TEXT3,"");
+        String h = db.getByName(Constants.HUMIDITY);
+        String t = db.getByName(Constants.TEMPERATURE);
+        Log.d("DB", h);
+        Log.d("DBA", t);
+        tv_valueTemp.setText(t);
+
+//        SharedPreferenceLog.d("DB", h);s sharedPreferences2 = getSharedPreferences(SHARED_PREF4, MODE_PRIVATE);
+//        text4 = sharedPreferences2.getString(TEXT4,"");
+        tv_valueHumid.setText(h);
 
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance("https://doan-4abdf-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Device");
@@ -67,13 +86,7 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
                             });
 
 
-                            SharedPreferences sharedPreferences1 = getSharedPreferences(SHARED_PREF3, MODE_PRIVATE);
-                            text3 = sharedPreferences1.getString(TEXT3,"");
-                            tv_valueTemp.setText(text3);
 
-                            SharedPreferences sharedPreferences2 = getSharedPreferences(SHARED_PREF4, MODE_PRIVATE);
-                            text4 = sharedPreferences2.getString(TEXT4,"");
-                            tv_valueHumid.setText(text4);
 
 
                             tv_statusAuto.setText(auto.toString());
@@ -119,17 +132,21 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
 
     @Override
     public void applyTexts(String temp, String humid) {
-        tv_valueTemp.setText(temp);
+       tv_valueTemp.setText(temp);
         tv_valueHumid.setText(humid);
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF3, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(TEXT3, tv_valueTemp.getText().toString());
-        editor.apply();
 
-        SharedPreferences sharedPreferences1 = getSharedPreferences(SHARED_PREF4, MODE_PRIVATE);
-        SharedPreferences.Editor editor1 = sharedPreferences1.edit();
-        editor1.putString(TEXT4, tv_valueHumid.getText().toString());
-        editor1.apply();
+        db.update(Constants.HUMIDITY,humid);
+        db.update(Constants.TEMPERATURE,temp);
+
+//        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF3, MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putString(TEXT3, tv_valueTemp.getText().toString());
+//        editor.apply();
+//
+//        SharedPreferences sharedPreferences1 = getSharedPreferences(SHARED_PREF4, MODE_PRIVATE);
+//        SharedPreferences.Editor editor1 = sharedPreferences1.edit();
+//        editor1.putString(TEXT4, tv_valueHumid.getText().toString());
+//        editor1.apply();
 
     }
 
