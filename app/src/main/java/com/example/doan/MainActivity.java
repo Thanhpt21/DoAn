@@ -3,14 +3,19 @@ package com.example.doan;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 
-
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 
+import android.os.Build;
 import android.os.Bundle;
 
 
@@ -51,12 +56,16 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getView();
+
+        Intent autoServiceIntent = new Intent(this, AutoService.class);
+        if(!foregroundServiceRunning()) {
+            startForegroundService(autoServiceIntent);
+        }
 
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -65,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         bottom_nav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.action_home:
                         Intent intent = new Intent(MainActivity.this, MainActivity.class);
                         startActivity(intent);
@@ -96,13 +105,55 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        FirebaseHandler firebaseHandler = FirebaseHandler.getInstance();
+        firebaseHandler.onDbChange(model -> {
+            System.out.println("Pump " + model.getPump());
+            switchCompat.setChecked(model.getPump());
+        });
+        DBHelper db = DBHelper.getInstance(Constants.PACKAGE_NAME, Constants.DATABASE_NAME);
+
         switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
-                    databaseReference.child("pump").setValue(b);
-                }else {
-                    databaseReference.child("pump").setValue(b);
+                if (b) {
+                    firebaseHandler.updateField("pump", true);
+                } else {
+                    String autoRunning = db.getByName(Constants.AUTO_RUNNING);
+                    String scheduleRunning = db.getByName(Constants.SCHEDULE_RUNNING);
+
+                    if (autoRunning.equals("1")) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setMessage("Chế độ auto đang được chạy, bạn muốn tắt?")
+                                .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        db.update(Constants.AUTO_MODE, "0");
+                                        db.update(Constants.AUTO_RUNNING, "0");
+                                        firebaseHandler.updateField("pump", false);
+                                    }
+                                })
+                                .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        switchCompat.setChecked(true);
+                                    }
+                                }).create().show();
+                    } else if (scheduleRunning.equals("1")) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setMessage("Chế độ schedule đang được chạy, bạn muốn tắt?")
+                                .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        db.update(Constants.SCHEDULE_MODE, "0");
+                                        db.update(Constants.SCHEDULE_RUNNING, "0");
+                                        firebaseHandler.updateField("pump", false);
+                                    }
+                                })
+                                .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        switchCompat.setChecked(true);
+                                    }
+                                }).create().show();
+                    } else {
+                        firebaseHandler.updateField("pump", false);
+                    }
                 }
             }
         });
@@ -113,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void temp(){
+    public void temp() {
         Range range = new Range();
         range.setColor(Color.parseColor("#E3E500"));
         range.setFrom(0.0);
@@ -138,9 +189,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
     }
-    public void humid(){
+
+    public boolean foregroundServiceRunning() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+            if (AutoService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void humid() {
         Range range = new Range();
         range.setColor(Color.parseColor("#9BED3B"));
         range.setFrom(0.0);
@@ -167,20 +228,21 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    public void getData(){
+
+    public void getData() {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Boolean alive = (Boolean) snapshot.child("alive").getValue();
-                Boolean pump =(Boolean) snapshot.child("pump").getValue();
+                Boolean pump = (Boolean) snapshot.child("pump").getValue();
 
-                if(alive == true){
+                if (alive == true) {
                     databaseReference.child("alive").setValue(false);
                 }
 
-                if(pump == true){
+                if (pump == true) {
                     switchCompat.setChecked(true);
-                }else {
+                } else {
                     switchCompat.setChecked(false);
                 }
                 Log.w(TAG, String.valueOf(snapshot));
@@ -194,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void getView(){
+    public void getView() {
         btn_Verify = findViewById(R.id.btn_Verify);
         tv_Verify = findViewById(R.id.tv_Verify);
         arcGauge1 = findViewById(R.id.arcGauge1);

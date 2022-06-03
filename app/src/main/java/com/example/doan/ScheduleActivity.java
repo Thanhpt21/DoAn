@@ -8,6 +8,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -22,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -34,8 +36,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -54,23 +58,94 @@ public class ScheduleActivity extends AppCompatActivity {
     Calendar calendar;
     AlarmManager alarmManager;
     PendingIntent pendingIntent;
+
+    int startHour, startMinute, endHour, endMinute;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
         getView();
 
+        DBHelper db = DBHelper.getInstance(Constants.PACKAGE_NAME, Constants.DATABASE_NAME);
+        FirebaseHandler firebaseHandler = FirebaseHandler.getInstance();
+
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance("https://doan-4abdf-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Device");
 
-        getData();
+        //getData();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel notificationChannel = new NotificationChannel("My notification", "My notification", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
+        if(!db.getByName(Constants.SCHEDULE_START).equals("")){
+            tv_timer1.setText(db.getByName(Constants.SCHEDULE_START));
+            LocalTime time = LocalTime.parse(db.getByName(Constants.SCHEDULE_START));
+            startHour = time.getHour();
+            startMinute = time.getMinute();
+        }
 
+        if(!db.getByName(Constants.SCHEDULE_END).equals("")){
+            tv_timer2.setText(db.getByName(Constants.SCHEDULE_END));
+            LocalTime time = LocalTime.parse(db.getByName(Constants.SCHEDULE_END));
+            endHour = time.getHour();
+            endMinute = time.getMinute();
+        }
+
+        tv_timer1.setOnClickListener(view->{
+            TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    startHour = hourOfDay;
+                    startMinute = minute;
+                    String time = String.format(Locale.getDefault(), "%02d:%02d:%02d", hourOfDay, minute, 0);
+                    tv_timer1.setText(time);
+                    db.update(Constants.SCHEDULE_START, time);
+                }
+            };
+
+            TimePickerDialog timePickerDialog = new TimePickerDialog(this, onTimeSetListener,
+                    startHour, startMinute,true);
+            timePickerDialog.setTitle("Chọn thời gian bắt đầu");
+            timePickerDialog.show();
+        });
+
+        tv_timer2.setOnClickListener(view->{
+            TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    endHour = hourOfDay;
+                    endMinute = minute;
+                    String time = String.format(Locale.getDefault(), "%02d:%02d:%02d", hourOfDay, minute, 0);
+                    tv_timer2.setText(time);
+                    db.update(Constants.SCHEDULE_END, time);
+                }
+            };
+
+            TimePickerDialog timePickerDialog = new TimePickerDialog(this, onTimeSetListener,
+                    endHour, endMinute,true);
+            timePickerDialog.setTitle("Chọn thời gian kết thúc");
+            timePickerDialog.show();
+        });
+
+        if(db.getByName(Constants.SCHEDULE_MODE).equals("1")){
+            tb_schedule.setChecked(true);
+        }
+
+        tb_schedule.setOnClickListener(view->{
+            if(((ToggleButton) view).isChecked()){
+                db.update(Constants.SCHEDULE_MODE,"1");
+            }
+            else{
+                db.update(Constants.SCHEDULE_MODE,"0");
+                db.update(Constants.SCHEDULE_RUNNING,"0");
+                firebaseHandler.updateField("pump",false);
+            }
+        });
+
+/*
         tb_schedule.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -246,6 +321,7 @@ public class ScheduleActivity extends AppCompatActivity {
             }
         });
         update();
+        */
 
         btn_scheduleBackHome.setOnClickListener(view -> {
             backHome();

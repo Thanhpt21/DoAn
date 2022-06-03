@@ -33,7 +33,7 @@ public class DBHelper {
     }
 
     boolean isTableExist() {
-        Cursor cursor = db.rawQuery("SELECT name FROM AutoTask",null);
+        Cursor cursor = db.rawQuery("SELECT name FROM AutoTask WHERE name=?", new String[]{"auto mode"});
         boolean tableExist = (cursor.getCount() != 0);
         cursor.close();
         return tableExist;
@@ -45,10 +45,11 @@ public class DBHelper {
 
     public String getByName(String name) {
         Cursor cursor = db.rawQuery("SELECT value FROM AutoTask WHERE name=?", new String[]{name});
-        if (cursor.moveToNext()) {
-            return cursor.getString(0);
-        }
-        return "";
+        try {
+            if (cursor.moveToNext())
+                return cursor.getString(0);
+        }catch (Exception e){}
+            return "";
     }
 
     public void onCreate() {
@@ -61,8 +62,6 @@ public class DBHelper {
     private void initDatabase() {
         db.execSQL("CREATE TABLE AutoTask(name text, value text)");
 
-        Log.d("TAG", "initDatabase: ");
-
         insert(Constants.AUTO_MODE, "0");
         insert(Constants.AUTO_RUNNING, "0");
         insert(Constants.SCHEDULE_MODE, "0");
@@ -70,7 +69,7 @@ public class DBHelper {
         insert(Constants.SCHEDULE_START, "00:00:00");
         insert(Constants.SCHEDULE_END, "00:00:00");
         insert(Constants.HUMIDITY, "70");
-        insert(Constants.TEMPERATURE, "35");
+        insert(Constants.TEMPERATURE, "38");
     }
 
     public void insert(String name, String value) {
@@ -79,7 +78,7 @@ public class DBHelper {
     }
 
     public void update(String name, String value) {
-        if(name.equals(Constants.SCHEDULE_MODE))
+        if (name.equals(Constants.SCHEDULE_MODE))
             Log.d("Mode Schedule", value);
         db.execSQL("UPDATE AutoTask SET value=? WHERE name=?", new String[]{value, name});
     }

@@ -36,6 +36,7 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
     public static String SHARED_PREF3 = "shared3", SHARED_PREF4 = "shared4";
     public static String TEXT3 = "text3", TEXT4 = "text4";
     public String text3, text4;
+    FirebaseHandler firebaseHandler;
 
 
 
@@ -47,7 +48,8 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
         setContentView(R.layout.activity_auto);
         getView();
 
-        db = DBHelper.getInstance(Constants.PACKAGE_NAME,"IOT");
+        db = DBHelper.getInstance(Constants.PACKAGE_NAME,Constants.DATABASE_NAME);
+        firebaseHandler = FirebaseHandler.getInstance();
 
         String tempAuto = tv_valueTemp.getText().toString();
         String humidAuto = tv_valueHumid.getText().toString();
@@ -66,56 +68,30 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
 
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance("https://doan-4abdf-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Device");
-        getData();
+        //getData();
+        btn_setValue.setOnClickListener(view->{
+            openDialog();
+        });
+
+        String autoMode = db.getByName(Constants.AUTO_MODE);
+        if(autoMode.equals("1"))
+            tb_auto.setChecked(true);
+
 
         tb_auto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    databaseReference.child("auto").setValue(b);
-                    databaseReference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Boolean auto =(Boolean) snapshot.child("auto").getValue();
-                            String humid = snapshot.child("humi").getValue().toString();
-                            String temp = snapshot.child("temp").getValue().toString();
-
-                            btn_setValue.setOnClickListener(view -> {
-                                openDialog();
-                                tb_auto.setChecked(false);
-                            });
-
-
-
-                            tv_statusAuto.setText(auto.toString());
-                            if(auto == true){
-                                if(Float.parseFloat(humid) <= Float.parseFloat(humidAuto) || Float.parseFloat(temp) >= Float.parseFloat(tempAuto) ){
-                                    databaseReference.child("pump").setValue(true);
-                                }else {
-                                    databaseReference.child("pump").setValue(false);
-                                }
-                                tv_statusAuto.setText("Đang bật");
-                            }else {
-                                tv_statusAuto.setText("Đã tắt");
-                            }
-                            Log.w(TAG, String.valueOf(snapshot));
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
+                    db.update(Constants.AUTO_MODE,"1");
 
                 }else {
-                    databaseReference.child("auto").setValue(b);
+                    db.update(Constants.AUTO_MODE,"0");
+                    db.update(Constants.AUTO_RUNNING,"0");
+                    firebaseHandler.updateField("pump",false);
                 }
             }
 
         });
-
-
-
 
         btn_autoBackHome.setOnClickListener(view -> {
             backHome();
