@@ -3,6 +3,7 @@
     package="com.example.doan">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -47,6 +48,8 @@
         <service
             android:name=".Music"
             android:enabled="true" />
+
+        <service android:name=".AutoService" />
     </application>
 
 </manifest>
