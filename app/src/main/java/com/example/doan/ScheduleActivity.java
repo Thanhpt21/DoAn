@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -45,7 +46,7 @@ import java.util.TimerTask;
 
 public class ScheduleActivity extends AppCompatActivity {
     Button btn_scheduleBackHome;
-    ToggleButton tb_schedule;
+    SwitchCompat tb_schedule;
     TextView tv_timer1,tv_timer2,tv_time;
     public static String SHARED_PREF1 = "shared1", SHARED_PREF2 = "shared2";
     public static String TEXT1 = "text1", TEXT2 = "text2";
@@ -128,7 +129,7 @@ public class ScheduleActivity extends AppCompatActivity {
         }
 
         tb_schedule.setOnClickListener(view->{
-            if(((ToggleButton) view).isChecked()){
+            if(((SwitchCompat) view).isChecked()){
                 db.update(Constants.SCHEDULE_MODE,"1");
             }
             else{
