@@ -3,13 +3,18 @@ package com.example.doan;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.time.LocalTime;
 
@@ -18,8 +23,27 @@ public class AutoService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+
         DBHelper db = DBHelper.getInstance(Constants.PACKAGE_NAME, Constants.DATABASE_NAME);
         FirebaseHandler firebaseHandler = FirebaseHandler.getInstance();
+        createNotificationChannel();
+
+        Intent notifyIntent = new Intent(this, com.example.doan.Notification.class);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        NotificationCompat.Builder notify = new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentTitle("IOT")
+                .setSound(alarmSound)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
         firebaseHandler.onDbChange(model -> {
             humidity = model.getHumi();
@@ -49,8 +73,9 @@ public class AutoService extends Service {
                     if (humidity < humiThreshold || temperature > tempThreshold) {
                         if (autoRunning.equals("0")) {
                             firebaseHandler.updateField("pump", true);
-                            Log.d("Pump", "set pump");
                             db.update(Constants.AUTO_RUNNING, "1");
+                            notify.setContentText("Chức năng auto đang chạy");
+                            notificationManager.notify(1, notify.build());
                         }
                     } else {
                         if (autoRunning.equals("1")) {
@@ -67,6 +92,8 @@ public class AutoService extends Service {
                         if(scheduleRunning.equals("0")) {
                             firebaseHandler.updateField("pump", true);
                             db.update(Constants.SCHEDULE_RUNNING, "1");
+                            notify.setContentText("Chức năng lên lịch đang chạy");
+                            notificationManager.notify(1, notify.build());
                         }
                     }
                     else {
@@ -103,6 +130,20 @@ public class AutoService extends Service {
                 .setSmallIcon(R.drawable.ic_launcher_foreground);
 
         startForeground(1001, notification.build());
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = Constants.NOTIFY_CHANNEL;
+            String description = Constants.NOTIFY_CHANNEL;
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(Constants.CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
 

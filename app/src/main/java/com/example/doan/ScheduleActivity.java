@@ -70,25 +70,6 @@ public class ScheduleActivity extends AppCompatActivity {
         DBHelper db = DBHelper.getInstance(Constants.PACKAGE_NAME, Constants.DATABASE_NAME);
         FirebaseHandler firebaseHandler = FirebaseHandler.getInstance();
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance("https://doan-4abdf-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Device");
-
-        //getData();
-
-
-
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel notificationChannel = new NotificationChannel("My notification", "My notification", NotificationManager.IMPORTANCE_DEFAULT);
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-
-        final Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
-        calendar = Calendar.getInstance();
-        Intent intent = new Intent(ScheduleActivity.this, AlarmReceiver.class);
-        alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-
         if(!db.getByName(Constants.SCHEDULE_START).equals("")){
             tv_timer1.setText(db.getByName(Constants.SCHEDULE_START));
             LocalTime time = LocalTime.parse(db.getByName(Constants.SCHEDULE_START));
@@ -113,15 +94,7 @@ public class ScheduleActivity extends AppCompatActivity {
                     tv_timer1.setText(time);
                     db.update(Constants.SCHEDULE_START, time);
 
-                    String message = "Máy bơm đang bật !";
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(ScheduleActivity.this, "My notification");
-                    builder.setSmallIcon(R.drawable.ic_message);
-                    builder.setContentTitle("Thông báo mới !");
-                    builder.setContentText(message);
-                    builder.setAutoCancel(true);
 
-                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(ScheduleActivity.this);
-                    notificationManagerCompat.notify(1, builder.build());
                 }
             };
 
@@ -140,22 +113,6 @@ public class ScheduleActivity extends AppCompatActivity {
                     String time = String.format(Locale.getDefault(), "%02d:%02d:%02d", hourOfDay, minute, 0);
                     tv_timer2.setText(time);
                     db.update(Constants.SCHEDULE_END, time);
-                    pendingIntent = PendingIntent.getBroadcast(
-                            ScheduleActivity.this,
-                            0,
-                            intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                    );
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                    String message = "Máy bơm đã tắt !";
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(ScheduleActivity.this, "My notification");
-                    builder.setSmallIcon(R.drawable.ic_message);
-                    builder.setContentTitle("Thông báo mới !");
-                    builder.setContentText(message);
-                    builder.setAutoCancel(true);
-
-                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(ScheduleActivity.this);
-                    notificationManagerCompat.notify(1, builder.build());
                 }
             };
 

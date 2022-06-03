@@ -11,4 +11,6 @@ public class Constants {
     public static final String TEMPERATURE = "TEMPERATURE";
     public static final String PACKAGE_NAME = "com.example.doan";
     public static final String DATABASE_NAME  = "IOT";
+    public static final String NOTIFY_CHANNEL = "IOTAPP";
+    public static final String CHANNEL_ID = "314";
 }
