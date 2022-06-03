@@ -57,7 +57,7 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
         String h = db.getByName(Constants.HUMIDITY);
         String t = db.getByName(Constants.TEMPERATURE);
         Log.d("DB", h);
-        Log.d("DBA", t);
+        Log.d("DB", t);
         tv_valueTemp.setText(t);
 
 //        SharedPreferenceLog.d("DB", h);s sharedPreferences2 = getSharedPreferences(SHARED_PREF4, MODE_PRIVATE);
@@ -84,8 +84,6 @@ public class AutoActivity extends AppCompatActivity implements ExampleDialog.Exa
                                 openDialog();
                                 tb_auto.setChecked(false);
                             });
-
-
 
 
 
