@@ -76,7 +76,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     public void save(){
-        if(et_namePf.getText().toString().isEmpty() || et_emailPf.getText().toString().isEmpty() || et_phonePf.getText().toString().isEmpty()){
+        if(et_namePf.getText().toString().isEmpty() || et_phonePf.getText().toString().isEmpty()){
             Toast.makeText(EditProfileActivity.this, "Có trường đang trống, vui lòng điền đầy đủ!", Toast.LENGTH_SHORT).show();
             return;
         }

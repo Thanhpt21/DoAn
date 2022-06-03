@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getView();
 
+
+
         Intent autoServiceIntent = new Intent(this, AutoService.class);
         if(!foregroundServiceRunning()) {
             startForegroundService(autoServiceIntent);
@@ -70,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance("https://doan-4abdf-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Device");
+
+
 
         bottom_nav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -112,6 +116,36 @@ public class MainActivity extends AppCompatActivity {
         });
         DBHelper db = DBHelper.getInstance(Constants.PACKAGE_NAME, Constants.DATABASE_NAME);
 
+//        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//        builder.setMessage("Chế độ auto đang được chạy, bạn muốn tắt?")
+//                .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        db.update(Constants.AUTO_MODE, "0");
+//                        db.update(Constants.AUTO_RUNNING, "0");
+//                        firebaseHandler.updateField("pump", false);
+//                    }
+//                })
+//                .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        switchCompat.setChecked(true);
+//                    }
+//                }).create();
+
+//        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+//        builder1.setMessage("Chế độ schedule đang được chạy, bạn muốn tắt?")
+//                .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        db.update(Constants.SCHEDULE_MODE, "0");
+//                        db.update(Constants.SCHEDULE_RUNNING, "0");
+//                        firebaseHandler.updateField("pump", false);
+//                    }
+//                })
+//                .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        switchCompat.setChecked(true);
+//                    }
+//                }).create();
+
         switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -122,35 +156,9 @@ public class MainActivity extends AppCompatActivity {
                     String scheduleRunning = db.getByName(Constants.SCHEDULE_RUNNING);
 
                     if (autoRunning.equals("1")) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setMessage("Chế độ auto đang được chạy, bạn muốn tắt?")
-                                .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        db.update(Constants.AUTO_MODE, "0");
-                                        db.update(Constants.AUTO_RUNNING, "0");
-                                        firebaseHandler.updateField("pump", false);
-                                    }
-                                })
-                                .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        switchCompat.setChecked(true);
-                                    }
-                                }).create().show();
+//                       builder.show();
                     } else if (scheduleRunning.equals("1")) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setMessage("Chế độ schedule đang được chạy, bạn muốn tắt?")
-                                .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        db.update(Constants.SCHEDULE_MODE, "0");
-                                        db.update(Constants.SCHEDULE_RUNNING, "0");
-                                        firebaseHandler.updateField("pump", false);
-                                    }
-                                })
-                                .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        switchCompat.setChecked(true);
-                                    }
-                                }).create().show();
+//                       builder1.show();
                     } else {
                         firebaseHandler.updateField("pump", false);
                     }
@@ -163,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
 
     public void temp() {
         Range range = new Range();

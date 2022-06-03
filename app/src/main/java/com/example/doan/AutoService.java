@@ -1,20 +1,34 @@
 package com.example.doan;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.time.LocalTime;
+import java.util.Calendar;
 
 public class AutoService extends Service {
     double humidity, temperature;
+
+    Calendar calendar;
+    AlarmManager alarmManager;
+    PendingIntent pendingIntent;
+
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -24,11 +38,23 @@ public class AutoService extends Service {
         firebaseHandler.onDbChange(model -> {
             humidity = model.getHumi();
             temperature = model.getTemp();
-            Log.d("Temp", String.valueOf(temperature));
         });
+
+        final Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
+        calendar = Calendar.getInstance();
+        Intent i = new Intent(AutoService.this, AlarmReceiver.class);
+        alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel notificationChannel = new NotificationChannel("My notification", "My notification", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
 
         new Thread(() -> {
             while (true) {
+
+
                 String autoMode = db.getByName(Constants.AUTO_MODE);
                 String autoRunning = db.getByName(Constants.AUTO_RUNNING);
                 String scheduleMode = db.getByName(Constants.SCHEDULE_MODE);
@@ -72,6 +98,13 @@ public class AutoService extends Service {
                     else {
                         if (scheduleRunning.equals("1")) {
                             firebaseHandler.updateField("pump", false);
+                            pendingIntent = PendingIntent.getBroadcast(
+                                    AutoService.this,
+                                    0,
+                                    i,
+                                    PendingIntent.FLAG_UPDATE_CURRENT
+                            );
+                            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
                             db.update(Constants.SCHEDULE_RUNNING, "0");
                         }
                     }

@@ -104,8 +104,8 @@ public class PersonalActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final EditText resetPass = new EditText(view.getContext());
                 final AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(view.getContext());
-                passwordResetDialog.setTitle("Reset password ?");
-                passwordResetDialog.setMessage("Nhập vào password lớn hơn 6 kí tự !");
+                passwordResetDialog.setTitle("Thay đổi mật khẩu ?");
+                passwordResetDialog.setMessage("Nhập vào mật khẩu lớn hơn 6 kí tự !");
                 passwordResetDialog.setView(resetPass);
                 passwordResetDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
@@ -114,12 +114,12 @@ public class PersonalActivity extends AppCompatActivity {
                         user.updatePassword(newPassword).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Toast.makeText(PersonalActivity.this, "Password reset thành công !", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PersonalActivity.this, "Thay đổi mật khẩu thành công !", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(PersonalActivity.this, "Password reset thất bại !", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PersonalActivity.this, "Thay đổi mật khẩu thất bại !", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

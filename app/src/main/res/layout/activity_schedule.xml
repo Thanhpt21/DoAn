@@ -12,9 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
+        android:text="CHẾ ĐỘ HẸN GIỜ"
         android:textColor="@color/black"
         android:textSize="30dp"
-        android:text="CHẾ ĐỘ HẸN GIỜ"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,18 +60,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_scheduleMode" />
 
-    <ToggleButton
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/tb_schedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/white"
-        android:background="@color/nav"
-        android:text="ToggleButton"
+        android:layout_marginTop="96dp"
+        android:layout_marginEnd="260dp"
+        android:thumb="@drawable/thumb"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_statusSchedule" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_scheduleMode"
+        app:showText="true"
+        app:track="@drawable/track" />
 
     <TextView
         android:id="@+id/tv_timeEnd"
