@@ -19,17 +19,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ToggleButton
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/tb_auto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="244dp"
-        android:textColor="@color/white"
-        android:background="@color/nav"
-        android:text="ToggleButton"
+        android:layout_marginTop="104dp"
+        android:layout_marginEnd="232dp"
+        android:thumb="@drawable/thumb"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_status" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_automode"
+        app:showText="true"
+        app:track="@drawable/track" />
 
     <TextView
         android:id="@+id/tv_temp"
